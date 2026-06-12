@@ -1,49 +1,30 @@
-name: Trigger auto deployment for careeriq
+name: Deploy CareerIQ to Azure Container Apps
 
-# When this action will be executed
 on:
-  # Automatically trigger it when detected changes in repo
   push:
-    branches: 
-      [ main ]
-    paths:
-    - '**'
-    - '.github/workflows/careeriq-AutoDeployTrigger-b2a5543d-5717-4bca-a662-7b5558ab04fd.yml'
-
-  # Allow manual trigger 
-  workflow_dispatch:      
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    permissions: 
-      id-token: write #This is required for requesting the OIDC JWT Token
-      contents: read #Required when GH token is used to authenticate with private repo
-
     steps:
-      - name: Checkout to the branch
-        uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Azure Login
-        uses: azure/login@v2
+      - name: Login to Azure
+        uses: azure/login@v1
         with:
-          client-id: ${{ secrets.CAREERIQ_AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.CAREERIQ_AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.CAREERIQ_AZURE_SUBSCRIPTION_ID }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Build and push container image to registry
-        uses: azure/container-apps-deploy-action@v2
+      - name: Build and deploy to Container Apps
+        uses: azure/container-apps-deploy-action@v1
         with:
           appSourcePath: ${{ github.workspace }}
-          _dockerfilePathKey_: _dockerfilePath_
-          _targetLabelKey_: _targetLabel_
-          registryUrl: 
-          registryUsername: ${{ secrets.CAREERIQ_REGISTRY_USERNAME }}
-          registryPassword: ${{ secrets.CAREERIQ_REGISTRY_PASSWORD }}
+          acrName: careeriqacr
           containerAppName: careeriq
           resourceGroup: rg-dshaik1-1365
-          imageToBuild: default/[parameters('containerAppName')]:${{ github.sha }}
-          _buildArgumentsKey_: |
-            _buildArgumentsValues_
-
-
+          containerAppEnvironment: managedEnvironment-rgdshaik11365-a1d5
+          targetPort: 80
+          ingress: external
+          environmentVariables: FOUNDRY_PROJECT_ENDPOINT=${{ secrets.FOUNDRY_PROJECT_ENDPOINT }} AZURE_AI_MODEL_DEPLOYMENT_NAME=${{ secrets.AZURE_AI_MODEL_DEPLOYMENT_NAME }} AZURE_API_KEY=${{ secrets.AZURE_API_KEY }} AZURE_OPENAI_ENDPOINT=${{ secrets.AZURE_OPENAI_ENDPOINT }}
