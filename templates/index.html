@@ -1,0 +1,2000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CareerIQ — AI Career Mentor · Microsoft Foundry</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+<style>
+/* ── Microsoft Fluent Design System tokens ───────────────────────────────── */
+:root {
+  /* Surface */
+  --ms-bg:           #1b1b1b;
+  --ms-surface:      #242424;
+  --ms-surface-2:    #2c2c2c;
+  --ms-surface-3:    #383838;
+  --ms-surface-4:    #414141;
+
+  /* Microsoft brand blue */
+  --ms-blue:         #0078d4;
+  --ms-blue-hover:   #106ebe;
+  --ms-blue-light:   #2899f5;
+  --ms-blue-subtle:  rgba(0,120,212,0.12);
+  --ms-blue-border:  rgba(0,120,212,0.3);
+
+  /* Accent — Microsoft teal/green */
+  --ms-teal:         #00b4d8;
+  --ms-teal-subtle:  rgba(0,180,216,0.1);
+  --ms-green:        #107c10;
+  --ms-green-light:  #54b054;
+  --ms-amber:        #ffb900;
+  --ms-red:          #d13438;
+
+  /* Text */
+  --ms-text:         #ffffff;
+  --ms-text-2:       #d6d6d6;
+  --ms-text-3:       #ababab;
+  --ms-text-4:       #6e6e6e;
+
+  /* Border */
+  --ms-border:       rgba(255,255,255,0.08);
+  --ms-border-2:     rgba(255,255,255,0.14);
+  --ms-border-focus: rgba(0,120,212,0.6);
+
+  /* Fluent corner radius */
+  --r-sm:  4px;
+  --r-md:  6px;
+  --r-lg:  8px;
+  --r-xl:  12px;
+  --r-2xl: 16px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  height: 100%; overflow: hidden;
+  background: var(--ms-bg);
+  color: var(--ms-text);
+  font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── TITLE BAR — Microsoft Fluent style ─────────────────────────────────── */
+.titlebar {
+  height: 48px;
+  background: var(--ms-surface);
+  border-bottom: 1px solid var(--ms-border);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 0;
+  position: relative;
+  z-index: 100;
+  flex-shrink: 0;
+}
+
+.titlebar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 220px;
+}
+
+.app-icon {
+  width: 28px; height: 28px;
+  background: var(--ms-blue);
+  border-radius: var(--r-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.app-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ms-text);
+  letter-spacing: -0.01em;
+}
+
+.app-subtitle {
+  font-size: 11px;
+  color: var(--ms-text-4);
+  font-weight: 400;
+}
+
+/* ── PIVOT TABS — Microsoft Fluent pivot style ─────────────────────────── */
+.pivot {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  flex: 1;
+  justify-content: center;
+}
+
+.pivot-tab {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 16px;
+  height: 48px;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--ms-text-3);
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+  position: relative;
+  transition: color 0.15s;
+  white-space: nowrap;
+}
+
+.pivot-tab::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 16px; right: 16px;
+  height: 2px;
+  background: var(--ms-blue);
+  border-radius: 2px 2px 0 0;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.pivot-tab.active {
+  color: var(--ms-text);
+  font-weight: 600;
+}
+
+.pivot-tab.active::after { opacity: 1; }
+
+.pivot-tab:hover:not(.active) { color: var(--ms-text-2); }
+
+.pivot-icon { font-size: 14px; }
+
+/* ── TITLEBAR RIGHT BADGES ─────────────────────────────────────────────── */
+.titlebar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 220px;
+  justify-content: flex-end;
+}
+
+.ms-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: var(--r-sm);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.ms-badge-blue {
+  background: var(--ms-blue-subtle);
+  color: var(--ms-blue-light);
+  border: 1px solid var(--ms-blue-border);
+}
+
+.ms-badge-live {
+  background: rgba(16,124,16,0.15);
+  color: var(--ms-green-light);
+  border: 1px solid rgba(84,176,84,0.25);
+}
+
+.live-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--ms-green-light);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+/* ── LAYOUT ──────────────────────────────────────────────────────────────── */
+.layout {
+  display: flex;
+  height: calc(100vh - 48px);
+  overflow: hidden;
+}
+
+/* ── LEFT NAV — Microsoft Fluent navigation pane ────────────────────────── */
+.nav-pane {
+  width: 256px;
+  background: var(--ms-surface);
+  border-right: 1px solid var(--ms-border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.nav-section {
+  padding: 12px 8px 4px;
+}
+
+.nav-section-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ms-text-4);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0 8px;
+  margin-bottom: 4px;
+}
+
+/* Microsoft-style nav item */
+.nav-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--r-lg);
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+  text-align: left;
+  width: 100%;
+  transition: background 0.1s;
+  margin-bottom: 2px;
+}
+
+.nav-item:hover { background: rgba(255,255,255,0.05); }
+.nav-item:active { background: rgba(255,255,255,0.08); }
+
+.nav-item-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+  margin-top: 1px;
+  width: 22px;
+  text-align: center;
+}
+
+.nav-item-body { flex: 1; min-width: 0; }
+
+.nav-item-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ms-text-2);
+  line-height: 1.3;
+}
+
+.nav-item-desc {
+  font-size: 11px;
+  color: var(--ms-text-4);
+  line-height: 1.4;
+  margin-top: 1px;
+}
+
+.nav-divider {
+  height: 1px;
+  background: var(--ms-border);
+  margin: 8px 8px;
+}
+
+.nav-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: var(--r-lg);
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: 12px;
+  color: var(--ms-text-3);
+  width: 100%;
+  transition: background 0.1s, color 0.1s;
+}
+
+.nav-action-btn:hover { background: rgba(255,255,255,0.05); color: var(--ms-text-2); }
+
+.nav-footer {
+  margin-top: auto;
+  padding: 12px 8px;
+  border-top: 1px solid var(--ms-border);
+}
+
+.ms-powered {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: var(--ms-blue-subtle);
+  border: 1px solid var(--ms-blue-border);
+  border-radius: var(--r-lg);
+}
+
+.ms-powered-icon { font-size: 16px; }
+
+.ms-powered-text { font-size: 11px; color: var(--ms-text-3); line-height: 1.4; }
+
+.ms-powered-brand { font-weight: 600; color: var(--ms-blue-light); }
+
+/* ── CONTENT AREA ────────────────────────────────────────────────────────── */
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--ms-bg);
+}
+
+.panel { display: none; flex: 1; flex-direction: column; overflow: hidden; }
+.panel.active { display: flex; }
+
+/* ── CHAT PANEL ──────────────────────────────────────────────────────────── */
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  scroll-behavior: smooth;
+}
+
+.chat-messages::-webkit-scrollbar { width: 4px; }
+.chat-messages::-webkit-scrollbar-track { background: transparent; }
+.chat-messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+
+/* ── WELCOME STATE ─────────────────────────────────────────────────────── */
+.welcome-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 40px 24px;
+  text-align: center;
+  gap: 0;
+}
+
+.welcome-hero {
+  width: 64px; height: 64px;
+  background: linear-gradient(135deg, var(--ms-blue) 0%, #00b4d8 100%);
+  border-radius: var(--r-xl);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 32px rgba(0,120,212,0.3);
+}
+
+.welcome-heading {
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--ms-text);
+  margin-bottom: 10px;
+  letter-spacing: -0.02em;
+}
+
+.welcome-sub {
+  font-size: 14px;
+  color: var(--ms-text-3);
+  max-width: 480px;
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+
+.welcome-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.welcome-chip {
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: var(--r-2xl);
+  background: var(--ms-surface-2);
+  border: 1px solid var(--ms-border-2);
+  color: var(--ms-text-3);
+}
+
+/* ── MESSAGE BUBBLES ─────────────────────────────────────────────────────── */
+.msg-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+  animation: msgIn 0.2s ease;
+}
+
+@keyframes msgIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.msg-group.user { align-items: flex-end; }
+.msg-group.assistant { align-items: flex-start; }
+
+.msg-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.msg-avatar {
+  width: 28px; height: 28px;
+  border-radius: var(--r-md);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.msg-avatar.ai {
+  background: linear-gradient(135deg, var(--ms-blue), #00b4d8);
+  font-size: 13px;
+}
+
+.msg-avatar.user {
+  background: var(--ms-surface-3);
+  color: var(--ms-blue-light);
+  font-size: 11px;
+}
+
+.msg-sender {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ms-text-3);
+}
+
+.msg-bubble {
+  max-width: 720px;
+  padding: 14px 18px;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.msg-group.user .msg-bubble {
+  background: var(--ms-blue);
+  color: #fff;
+  border-radius: var(--r-xl) var(--r-sm) var(--r-xl) var(--r-xl);
+}
+
+.msg-group.assistant .msg-bubble {
+  background: var(--ms-surface-2);
+  border: 1px solid var(--ms-border);
+  color: var(--ms-text);
+  border-radius: var(--r-sm) var(--r-xl) var(--r-xl) var(--r-xl);
+}
+
+/* ── Markdown inside bubble ─────────────────────────────────────────────── */
+.msg-bubble h1, .msg-bubble h2, .msg-bubble h3 {
+  color: var(--ms-blue-light);
+  font-size: 14px;
+  font-weight: 600;
+  margin: 14px 0 6px;
+}
+.msg-bubble h1:first-child, .msg-bubble h2:first-child, .msg-bubble h3:first-child { margin-top: 0; }
+.msg-bubble p { margin-bottom: 8px; }
+.msg-bubble p:last-child { margin-bottom: 0; }
+.msg-bubble ul, .msg-bubble ol { padding-left: 20px; margin-bottom: 8px; }
+.msg-bubble li { margin-bottom: 4px; }
+.msg-bubble strong { color: #fff; font-weight: 600; }
+.msg-group.assistant .msg-bubble strong { color: var(--ms-text); }
+.msg-bubble a { color: var(--ms-blue-light); text-decoration: none; font-weight: 500; }
+.msg-bubble a:hover { text-decoration: underline; color: var(--ms-teal); }
+.msg-bubble code {
+  font-family: 'Cascadia Code', 'Consolas', monospace;
+  background: rgba(0,0,0,0.3);
+  padding: 1px 6px;
+  border-radius: var(--r-sm);
+  font-size: 12.5px;
+  color: var(--ms-teal);
+}
+.msg-bubble hr { border: none; border-top: 1px solid var(--ms-border-2); margin: 12px 0; }
+.msg-bubble blockquote {
+  border-left: 3px solid var(--ms-blue);
+  padding-left: 12px;
+  color: var(--ms-text-3);
+  font-style: italic;
+  margin: 8px 0;
+}
+
+/* ── TYPING INDICATOR ─────────────────────────────────────────────────────── */
+.typing-indicator {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  padding: 14px 18px;
+  background: var(--ms-surface-2);
+  border: 1px solid var(--ms-border);
+  border-radius: var(--r-sm) var(--r-xl) var(--r-xl) var(--r-xl);
+  max-width: 80px;
+}
+
+.typing-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--ms-blue-light);
+  animation: typingBounce 1.4s infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typingBounce { 0%,60%,100%{transform:translateY(0);opacity:.4} 30%{transform:translateY(-5px);opacity:1} }
+
+/* ── CHAT INPUT ─────────────────────────────────────────────────────────── */
+.chat-input-area {
+  padding: 12px 28px 16px;
+  background: var(--ms-surface);
+  border-top: 1px solid var(--ms-border);
+  flex-shrink: 0;
+}
+
+.input-shell {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  background: var(--ms-surface-2);
+  border: 1px solid var(--ms-border-2);
+  border-radius: var(--r-xl);
+  padding: 10px 12px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.input-shell:focus-within {
+  border-color: var(--ms-blue);
+  box-shadow: 0 0 0 1px var(--ms-blue), 0 0 0 4px rgba(0,120,212,0.12);
+}
+
+#chatInput {
+  flex: 1;
+  background: none; border: none; outline: none;
+  color: var(--ms-text);
+  font-family: inherit; font-size: 14px;
+  resize: none; max-height: 140px; min-height: 22px;
+  line-height: 1.6;
+}
+
+#chatInput::placeholder { color: var(--ms-text-4); }
+
+#sendBtn {
+  width: 32px; height: 32px;
+  border-radius: var(--r-md);
+  background: var(--ms-blue);
+  border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s, transform 0.1s;
+  color: white;
+}
+
+#sendBtn:hover:not(:disabled) { background: var(--ms-blue-hover); }
+#sendBtn:active:not(:disabled) { transform: scale(0.95); }
+#sendBtn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.input-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 6px;
+  padding: 0 2px;
+}
+
+.input-hint-text {
+  font-size: 11px;
+  color: var(--ms-text-4);
+}
+
+.input-shortcut {
+  font-size: 11px;
+  color: var(--ms-text-4);
+}
+
+/* ── STUDIO PANEL ────────────────────────────────────────────────────────── */
+.studio-layout {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.studio-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid var(--ms-border);
+  height: 260px;
+  flex-shrink: 0;
+}
+
+.studio-pane {
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--ms-border);
+  overflow: hidden;
+}
+
+.studio-pane:last-child { border-right: none; }
+
+.studio-pane-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  background: var(--ms-surface);
+  border-bottom: 1px solid var(--ms-border);
+  flex-shrink: 0;
+}
+
+.pane-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ms-text-3);
+}
+
+.pane-label-icon { font-size: 14px; }
+
+.pane-actions { display: flex; align-items: center; gap: 6px; }
+
+.char-count { font-size: 11px; color: var(--ms-text-4); }
+
+/* Microsoft Upload Button */
+.ms-upload-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  background: var(--ms-surface-3);
+  border: 1px solid var(--ms-border-2);
+  border-radius: var(--r-md);
+  color: var(--ms-text-3);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+
+.ms-upload-btn:hover { background: var(--ms-surface-4); color: var(--ms-text-2); border-color: rgba(255,255,255,0.2); }
+.ms-upload-btn input[type=file] { display: none; }
+
+.upload-status {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: var(--r-md);
+  display: none;
+  align-items: center;
+  gap: 4px;
+}
+
+.upload-status.loading { display:flex; background:rgba(0,120,212,0.15); color:var(--ms-blue-light); border:1px solid var(--ms-blue-border); }
+.upload-status.success { display:flex; background:rgba(16,124,16,0.15); color:var(--ms-green-light); border:1px solid rgba(84,176,84,0.25); }
+.upload-status.error   { display:flex; background:rgba(209,52,56,0.1); color:#f87171; border:1px solid rgba(209,52,56,0.25); }
+
+.upload-spin { width:10px;height:10px;border:2px solid transparent;border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+.studio-textarea {
+  flex: 1;
+  background: var(--ms-bg);
+  border: none; outline: none;
+  color: var(--ms-text-2);
+  font-family: inherit; font-size: 13px;
+  line-height: 1.7;
+  padding: 12px 14px;
+  resize: none; width: 100%;
+}
+
+.studio-textarea::placeholder { color: var(--ms-text-4); }
+
+/* ── STUDIO CONTROLS BAR ─────────────────────────────────────────────────── */
+.studio-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: var(--ms-surface);
+  border-bottom: 1px solid var(--ms-border);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.ms-select-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ms-select-label { font-size: 12px; color: var(--ms-text-3); white-space: nowrap; }
+
+.ms-select {
+  background: var(--ms-surface-2);
+  border: 1px solid var(--ms-border-2);
+  color: var(--ms-text-2);
+  font-family: inherit; font-size: 12px;
+  padding: 5px 10px;
+  border-radius: var(--r-md);
+  outline: none; cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.ms-select:focus { border-color: var(--ms-blue); }
+
+/* ── Microsoft Primary Button ─────────────────────────────────────────────── */
+.ms-btn-primary {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 18px;
+  background: var(--ms-blue);
+  color: white;
+  border: none;
+  border-radius: var(--r-md);
+  font-family: inherit; font-size: 13px; font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s;
+  white-space: nowrap;
+}
+
+.ms-btn-primary:hover:not(:disabled) { background: var(--ms-blue-hover); box-shadow: 0 2px 8px rgba(0,120,212,0.4); }
+.ms-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── STUDIO OUTPUT ────────────────────────────────────────────────────────── */
+.studio-output {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.output-pivot {
+  display: flex;
+  background: var(--ms-surface);
+  border-bottom: 1px solid var(--ms-border);
+  flex-shrink: 0;
+}
+
+.output-pivot-tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 16px;
+  height: 40px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--ms-text-3);
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+  position: relative;
+  transition: color 0.15s;
+  white-space: nowrap;
+}
+
+.output-pivot-tab::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 12px; right: 12px;
+  height: 2px;
+  background: var(--ms-blue);
+  border-radius: 2px 2px 0 0;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.output-pivot-tab.active { color: var(--ms-text); font-weight: 600; }
+.output-pivot-tab.active::after { opacity: 1; }
+.output-pivot-tab:hover:not(.active) { color: var(--ms-text-2); background: rgba(255,255,255,0.03); }
+
+.output-body { flex: 1; overflow-y: auto; padding: 20px 24px; display: none; }
+.output-body.active { display: block; }
+.output-body::-webkit-scrollbar { width: 4px; }
+.output-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+
+/* ── Empty state ─────────────────────────────────────────────────────────── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 8px;
+  color: var(--ms-text-4);
+  text-align: center;
+}
+
+.empty-icon { font-size: 32px; opacity: 0.4; margin-bottom: 4px; }
+.empty-title { font-size: 13px; font-weight: 500; }
+.empty-sub { font-size: 12px; }
+
+/* ── Score badges ─────────────────────────────────────────────────────────── */
+.score-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+
+.score-badge {
+  display: flex; align-items: center; gap: 5px;
+  padding: 4px 10px;
+  border-radius: var(--r-md);
+  font-size: 11px; font-weight: 500;
+}
+
+.score-badge.ats   { background:rgba(16,124,16,0.15); color:var(--ms-green-light); border:1px solid rgba(84,176,84,0.25); }
+.score-badge.match { background:rgba(255,185,0,0.12); color:var(--ms-amber); border:1px solid rgba(255,185,0,0.25); }
+.score-badge.kw    { background:var(--ms-blue-subtle); color:var(--ms-blue-light); border:1px solid var(--ms-blue-border); }
+
+/* ── ATS Score Card ──────────────────────────────────────────────────────── */
+.ats-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 14px 18px;
+  background: var(--ms-surface-2);
+  border: 1px solid var(--ms-border);
+  border-radius: var(--r-xl);
+  margin-bottom: 14px;
+}
+
+.ats-ring {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  border: 4px solid var(--ms-blue);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  flex-shrink: 0;
+  background: var(--ms-blue-subtle);
+  transition: border-color 0.5s;
+}
+
+.ats-ring.good { border-color: var(--ms-green-light); background: rgba(16,124,16,0.12); }
+.ats-ring.warn { border-color: var(--ms-amber); background: rgba(255,185,0,0.1); }
+
+.ats-score-num { font-size: 22px; font-weight: 700; color: var(--ms-blue-light); line-height: 1; }
+.ats-ring.good .ats-score-num { color: var(--ms-green-light); }
+.ats-ring.warn .ats-score-num { color: var(--ms-amber); }
+.ats-score-denom { font-size: 10px; color: var(--ms-text-4); }
+
+.ats-meta-title { font-size: 13px; font-weight: 600; color: var(--ms-text); margin-bottom: 3px; }
+.ats-meta-sub { font-size: 12px; color: var(--ms-text-3); margin-bottom: 4px; }
+.ats-meta-target { font-size: 12px; color: var(--ms-blue-light); font-weight: 500; }
+
+/* ── Output content box ──────────────────────────────────────────────────── */
+.output-content-box {
+  background: var(--ms-surface-2);
+  border: 1px solid var(--ms-border);
+  border-radius: var(--r-xl);
+  padding: 16px 18px;
+  font-size: 13.5px;
+  line-height: 1.8;
+  color: var(--ms-text-2);
+  margin-bottom: 12px;
+}
+
+.output-content-box h1, .output-content-box h2, .output-content-box h3 { color: var(--ms-blue-light); margin: 12px 0 5px; font-size: 13.5px; }
+.output-content-box h1:first-child, .output-content-box h2:first-child, .output-content-box h3:first-child { margin-top: 0; }
+.output-content-box p { margin-bottom: 7px; }
+.output-content-box p:last-child { margin-bottom: 0; }
+.output-content-box ul, .output-content-box ol { padding-left: 18px; margin-bottom: 8px; }
+.output-content-box li { margin-bottom: 3px; }
+.output-content-box strong { color: var(--ms-text); font-weight: 600; }
+.output-content-box a { color: var(--ms-blue-light); text-decoration: none; }
+.output-content-box a:hover { text-decoration: underline; }
+.output-content-box hr { border: none; border-top: 1px solid var(--ms-border-2); margin: 10px 0; }
+.output-content-box code { font-family: 'Cascadia Code','Consolas',monospace; background: rgba(0,0,0,0.3); padding: 1px 5px; border-radius: var(--r-sm); font-size: 12px; color: var(--ms-teal); }
+
+/* ── Streaming badge ─────────────────────────────────────────────────────── */
+.streaming-badge {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--ms-blue-light);
+  margin-bottom: 10px;
+  padding: 4px 10px;
+  background: var(--ms-blue-subtle);
+  border: 1px solid var(--ms-blue-border);
+  border-radius: var(--r-md);
+  width: fit-content;
+}
+
+.streaming-dot { width:5px;height:5px;border-radius:50%;background:var(--ms-blue-light);animation:pulse 1s infinite; }
+
+/* ── Download action bar ─────────────────────────────────────────────────── */
+.output-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ms-btn-secondary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--ms-surface-3);
+  border: 1px solid var(--ms-border-2);
+  border-radius: var(--r-md);
+  color: var(--ms-text-3);
+  font-family: inherit; font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.ms-btn-secondary:hover:not(:disabled) { background: var(--ms-surface-4); color: var(--ms-text-2); border-color: rgba(255,255,255,0.2); }
+.ms-btn-secondary.dl { color: var(--ms-teal); border-color: rgba(0,180,216,0.25); }
+.ms-btn-secondary.dl:hover { background: var(--ms-teal-subtle); border-color: rgba(0,180,216,0.5); }
+.ms-btn-secondary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── Studio sidebar content ──────────────────────────────────────────────── */
+.studio-nav-section {
+  padding: 12px 8px 4px;
+}
+
+.studio-info-card {
+  background: var(--ms-surface-2);
+  border: 1px solid var(--ms-border);
+  border-radius: var(--r-lg);
+  padding: 12px 14px;
+  margin: 4px 0;
+}
+
+.studio-info-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ms-text-2);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.studio-info-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.studio-info-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  font-size: 11px;
+  color: var(--ms-text-3);
+  line-height: 1.5;
+}
+
+.studio-info-list li::before {
+  content: '›';
+  color: var(--ms-blue-light);
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 0px;
+}
+
+.studio-tip {
+  font-size: 11px;
+  color: var(--ms-text-4);
+  background: var(--ms-surface-2);
+  border: 1px solid var(--ms-border);
+  border-radius: var(--r-lg);
+  padding: 9px 12px;
+  line-height: 1.6;
+  margin: 4px 0;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────────── */
+/* ── Reasoning trace ────────────────────────────────────────────────────── */
+.reasoning-trace {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 12px;
+  background: var(--ms-surface-2);
+  border: 1px solid var(--ms-border);
+  border-radius: var(--r-lg);
+  margin-bottom: 6px;
+  max-width: 480px;
+  transition: all 0.4s ease;
+  overflow: hidden;
+}
+.reasoning-trace.collapsed {
+  max-height: 28px;
+  opacity: 0.5;
+  cursor: pointer;
+}
+.trace-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--ms-text-3);
+  padding: 2px 0;
+  transition: color 0.2s;
+}
+.trace-step.active { color: var(--ms-blue-light); }
+.trace-step.done   { color: var(--ms-green-light); }
+.trace-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--ms-text-4);
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+.trace-step.active .trace-dot {
+  background: var(--ms-blue-light);
+  animation: pulse 1s infinite;
+}
+.trace-step.done .trace-dot { background: var(--ms-green-light); }
+.trace-label { font-size: 12px; }
+
+/* ── Milestone tracker ───────────────────────────────────────────────────── */
+.milestone-header {
+  margin-bottom: 16px;
+}
+.milestone-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.milestone-heading {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ms-text);
+}
+.milestone-sub {
+  font-size: 12px;
+  color: var(--ms-text-3);
+}
+.milestone-progress-bar {
+  height: 6px;
+  background: var(--ms-surface-3);
+  border-radius: 99px;
+  overflow: hidden;
+  margin-bottom: 5px;
+}
+.milestone-progress-fill {
+  height: 100%;
+  background: var(--ms-blue);
+  border-radius: 99px;
+  transition: width 0.5s ease;
+  width: 0%;
+}
+.milestone-progress-label {
+  font-size: 11px;
+  color: var(--ms-text-4);
+}
+.milestone-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.milestone-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--ms-surface-2);
+  border: 1px solid var(--ms-border);
+  border-radius: var(--r-lg);
+  transition: border-color 0.15s;
+}
+.milestone-item.completed {
+  border-color: rgba(84,176,84,0.3);
+  background: rgba(16,124,16,0.06);
+}
+.milestone-check {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--ms-border-2);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  font-size: 11px;
+}
+.milestone-item.completed .milestone-check {
+  background: var(--ms-green-light);
+  border-color: var(--ms-green-light);
+  color: white;
+}
+.milestone-text {
+  flex: 1;
+  font-size: 13px;
+  color: var(--ms-text-2);
+}
+.milestone-item.completed .milestone-text {
+  text-decoration: line-through;
+  color: var(--ms-text-4);
+}
+.milestone-delete {
+  font-size: 14px;
+  color: var(--ms-text-4);
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 2px 4px;
+  border-radius: var(--r-sm);
+  transition: all 0.15s;
+}
+.milestone-delete:hover { color: var(--ms-red); background: rgba(209,52,56,0.1); }
+.milestone-add-form {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+.milestone-input {
+  flex: 1;
+  background: var(--ms-surface-2);
+  border: 1px solid var(--ms-border-2);
+  color: var(--ms-text);
+  font-family: inherit; font-size: 13px;
+  padding: 8px 12px;
+  border-radius: var(--r-md);
+  outline: none;
+}
+.milestone-input:focus { border-color: var(--ms-blue); }
+
+@media (max-width: 900px) {
+  .nav-pane { display: none; }
+  .studio-inputs { grid-template-columns: 1fr; height: 400px; }
+  .studio-pane:first-child { border-right: none; border-bottom: 1px solid var(--ms-border); height: 200px; }
+  .titlebar-left .app-subtitle { display: none; }
+  .chat-messages { padding: 16px; }
+  .chat-input-area { padding: 10px 16px 14px; }
+  .studio-controls { padding: 8px 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── TITLE BAR ─────────────────────────────────────────────────────────── -->
+<div class="titlebar">
+  <div class="titlebar-left">
+    <div class="app-icon">🧭</div>
+    <div>
+      <div class="app-name">CareerIQ</div>
+      <div class="app-subtitle">AI Career Mentor</div>
+    </div>
+  </div>
+
+  <nav class="pivot" role="tablist" aria-label="Main navigation">
+    <button class="pivot-tab active" role="tab" aria-selected="true"
+            onclick="switchPanel('chat',this)" id="tab-chat">
+      <span class="pivot-icon">💬</span> Career Coach
+    </button>
+    <button class="pivot-tab" role="tab" aria-selected="false"
+            onclick="switchPanel('studio',this)" id="tab-studio">
+      <span class="pivot-icon">📄</span> Resume Studio
+    </button>
+  </nav>
+
+  <div class="titlebar-right">
+    <span class="ms-badge ms-badge-blue">⚡ Microsoft Foundry</span>
+    <span class="ms-badge ms-badge-live"><span class="live-dot"></span> Live</span>
+  </div>
+</div>
+
+<!-- ── MAIN LAYOUT ────────────────────────────────────────────────────────── -->
+<div class="layout">
+
+  <!-- LEFT NAV -->
+  <aside class="nav-pane" id="nav-chat-pane">
+
+    <!-- Career Coach Nav -->
+    <div id="nav-chat" style="display:flex;flex-direction:column;flex:1;overflow:hidden;">
+      <div class="nav-section">
+        <div class="nav-section-label">Quick starts</div>
+        <button class="nav-item" onclick="sendStarter(this.dataset.prompt)"
+          data-prompt="I am a Computer Science student graduating in 2026. I want to become a Software Engineer at Google or Microsoft. I know Java and Python basics. Give me my complete roadmap.">
+          <span class="nav-item-icon">🎓</span>
+          <div class="nav-item-body">
+            <div class="nav-item-title">CS Student → Big Tech</div>
+            <div class="nav-item-desc">Full roadmap to Google / Microsoft</div>
+          </div>
+        </button>
+        <button class="nav-item" onclick="sendStarter(this.dataset.prompt)"
+          data-prompt="I am a Java backend developer with 2 years experience wanting to move into AI/ML engineering. Give me my complete step-by-step roadmap with all certifications and resources.">
+          <span class="nav-item-icon">🔄</span>
+          <div class="nav-item-body">
+            <div class="nav-item-title">Java Dev → AI/ML Engineer</div>
+            <div class="nav-item-desc">Certs + roadmap + first step</div>
+          </div>
+        </button>
+        <button class="nav-item" onclick="sendStarter(this.dataset.prompt)"
+          data-prompt="I am a complete beginner with no experience. I want to become a Cloud Engineer on Azure. Give me my full roadmap from zero, every step, cert, and free resource.">
+          <span class="nav-item-icon">☁️</span>
+          <div class="nav-item-body">
+            <div class="nav-item-title">Zero → Cloud Engineer</div>
+            <div class="nav-item-desc">Start from scratch, step by step</div>
+          </div>
+        </button>
+        <button class="nav-item" onclick="sendStarter(this.dataset.prompt)"
+          data-prompt="I just completed AZ-900. What are all the next steps and certifications I need to become an Azure AI Engineer? Give me the complete roadmap.">
+          <span class="nav-item-icon">🏆</span>
+          <div class="nav-item-body">
+            <div class="nav-item-title">AZ-900 Done → What Next?</div>
+            <div class="nav-item-desc">Next milestones after first cert</div>
+          </div>
+        </button>
+      </div>
+
+      <div class="nav-divider"></div>
+
+      <div class="nav-section">
+        <div class="nav-section-label">Session</div>
+        <button class="nav-action-btn" onclick="clearChat()">
+          <span>🗑</span> Clear conversation
+        </button>
+      </div>
+
+      <div class="nav-footer">
+        <div class="ms-powered">
+          <span class="ms-powered-icon">⚡</span>
+          <div class="ms-powered-text">
+            Powered by <span class="ms-powered-brand">Microsoft Foundry</span><br>
+            gpt-4.1-mini · Responses API
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Studio Nav -->
+    <div id="nav-studio" style="display:none;flex-direction:column;flex:1;overflow-y:auto;overflow-x:hidden;">
+      <div class="studio-nav-section">
+        <div class="nav-section-label">What Resume Studio does</div>
+        <div class="studio-info-card">
+          <div class="studio-info-title">📋 Paste resume + JD</div>
+          <ul class="studio-info-list">
+            <li>Optimizes to ATS 93+ score</li>
+            <li>Injects all JD keywords naturally</li>
+            <li>Rewrites bullets with action verbs</li>
+            <li>Writes tailored cover letter</li>
+            <li>Full keyword gap analysis</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="nav-divider"></div>
+
+      <div class="studio-nav-section">
+        <div class="nav-section-label">Tips</div>
+        <div class="studio-tip">💡 Paste the <strong style="color:var(--ms-text-2)">full JD</strong> including required and preferred qualifications for the best ATS score.</div>
+        <div class="studio-tip" style="margin-top:6px;">💡 Supports <strong style="color:var(--ms-text-2)">PDF, DOCX, TXT</strong> upload — or paste directly.</div>
+      </div>
+
+      <div class="nav-footer">
+        <div class="ms-powered">
+          <span class="ms-powered-icon">⚡</span>
+          <div class="ms-powered-text">
+            Powered by <span class="ms-powered-brand">Microsoft Foundry</span><br>
+            gpt-4.1-mini · Responses API
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- ── CAREER COACH PANEL ──────────────────────────────────────────── -->
+    <div class="panel active" id="panel-chat" role="tabpanel" aria-labelledby="tab-chat">
+      <div class="chat-messages" id="chatMessages">
+        <div class="welcome-state" id="welcomeState">
+          <div class="welcome-hero">🧭</div>
+          <h1 class="welcome-heading">Welcome to CareerIQ</h1>
+          <p class="welcome-sub">Your personal AI career mentor, built on Microsoft Foundry. Tell me where you are today and your dream job — I'll map out every step to get you there.</p>
+          <div class="welcome-chips">
+            <span class="welcome-chip">✅ Step-by-step roadmap</span>
+            <span class="welcome-chip">📜 Cert links</span>
+            <span class="welcome-chip">🗺️ Career roadmaps</span>
+            <span class="welcome-chip">🆓 Free resources</span>
+            <span class="welcome-chip">🎉 Milestone tracking</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="chat-input-area">
+        <div class="input-shell">
+          <textarea id="chatInput" rows="1"
+            placeholder="Tell me your background and dream job — I'll show you every step to get there..."></textarea>
+          <button id="sendBtn" onclick="sendMessage()" aria-label="Send message">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="22" y1="2" x2="11" y2="13"/>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+            </svg>
+          </button>
+        </div>
+        <div class="input-footer">
+          <span class="input-hint-text">Built on Microsoft Foundry · gpt-4.1-mini · Your personal career mentor</span>
+          <span class="input-shortcut">Enter to send · Shift+Enter for new line</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── RESUME STUDIO PANEL ─────────────────────────────────────────── -->
+    <div class="panel" id="panel-studio" role="tabpanel" aria-labelledby="tab-studio">
+      <div class="studio-layout">
+
+        <!-- Inputs row -->
+        <div class="studio-inputs">
+          <!-- Resume -->
+          <div class="studio-pane">
+            <div class="studio-pane-header">
+              <div class="pane-label">
+                <span class="pane-label-icon">📋</span> Your Resume
+              </div>
+              <div class="pane-actions">
+                <span class="char-count" id="resumeChars">0 chars</span>
+                <label class="ms-upload-btn">
+                  <input type="file" accept=".pdf,.docx,.txt,.md"
+                    onchange="handleUpload(this,'resumeInput','resumeChars','resumeUploadStatus')">
+                  ↑ Attach
+                </label>
+                <span class="upload-status" id="resumeUploadStatus"></span>
+              </div>
+            </div>
+            <textarea class="studio-textarea" id="resumeInput"
+              placeholder="Paste your resume here — or click Attach to upload PDF / DOCX / TXT&#10;&#10;Include: experience, skills, education, certifications, projects"
+              oninput="countChars('resumeInput','resumeChars')"></textarea>
+          </div>
+
+          <!-- JD -->
+          <div class="studio-pane">
+            <div class="studio-pane-header">
+              <div class="pane-label">
+                <span class="pane-label-icon">📌</span> Job Description
+              </div>
+              <div class="pane-actions">
+                <span class="char-count" id="jdChars">0 chars</span>
+                <label class="ms-upload-btn">
+                  <input type="file" accept=".pdf,.docx,.txt,.md"
+                    onchange="handleUpload(this,'jdInput','jdChars','jdUploadStatus')">
+                  ↑ Attach
+                </label>
+                <span class="upload-status" id="jdUploadStatus"></span>
+              </div>
+            </div>
+            <textarea class="studio-textarea" id="jdInput"
+              placeholder="Paste the job description here — or click Attach to upload&#10;&#10;Include: requirements, preferred qualifications, tech stack"
+              oninput="countChars('jdInput','jdChars')"></textarea>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="studio-controls">
+          <div class="ms-select-group">
+            <span class="ms-select-label">Role level</span>
+            <select class="ms-select" id="roleLevel">
+              <option value="entry">Entry (0–2 yrs)</option>
+              <option value="mid" selected>Mid (2–6 yrs)</option>
+              <option value="senior">Senior (6+ yrs)</option>
+              <option value="lead">Lead / Manager</option>
+            </select>
+          </div>
+          <div class="ms-select-group">
+            <span class="ms-select-label">Industry</span>
+            <select class="ms-select" id="industry">
+              <option value="tech">Tech / Software</option>
+              <option value="ai">AI / ML</option>
+              <option value="cloud">Cloud / DevOps</option>
+              <option value="data">Data Engineering</option>
+              <option value="finance">Finance / Fintech</option>
+              <option value="healthcare">Healthcare IT</option>
+              <option value="general">General</option>
+            </select>
+          </div>
+          <button class="ms-btn-primary" id="optimizeBtn" onclick="runStudio()">
+            ✨ Optimize Resume + Cover Letter
+          </button>
+        </div>
+
+        <!-- Output -->
+        <div class="studio-output">
+          <div class="output-pivot">
+            <button class="output-pivot-tab active" onclick="switchOutputTab('resume',this)">📝 Resume</button>
+            <button class="output-pivot-tab" onclick="switchOutputTab('cover',this)">✉️ Cover Letter</button>
+            <button class="output-pivot-tab" onclick="switchOutputTab('analysis',this)">📊 Analysis</button>
+            <button class="output-pivot-tab" onclick="switchOutputTab('interview',this)">🎤 Interview Prep</button>
+            <button class="output-pivot-tab" onclick="switchOutputTab('milestones',this)">🏆 My Roadmap</button>
+          </div>
+
+          <!-- Resume output -->
+          <div class="output-body active" id="out-resume">
+            <div class="empty-state" id="resumeEmpty">
+              <div class="empty-icon">📝</div>
+              <div class="empty-title">ATS 93+ optimized resume</div>
+              <div class="empty-sub">Paste your resume + JD above, then click Optimize</div>
+            </div>
+            <div id="resumeResult" style="display:none">
+              <div class="score-row" id="resumeScores"></div>
+              <div class="streaming-badge" id="resumeStreaming">
+                <span class="streaming-dot"></span> Optimizing for ATS 93+...
+              </div>
+              <div class="output-content-box" id="resumeOutput"></div>
+              <div class="output-actions">
+                <button class="ms-btn-secondary" onclick="copyOut('resumeOutput')">📋 Copy</button>
+                <button class="ms-btn-secondary dl" onclick="downloadFile('resume','docx')">⬇ Download DOCX</button>
+                <button class="ms-btn-secondary dl" onclick="downloadFile('resume','pdf')">⬇ Download PDF</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cover output -->
+          <div class="output-body" id="out-cover">
+            <div class="empty-state" id="coverEmpty">
+              <div class="empty-icon">✉️</div>
+              <div class="empty-title">Tailored cover letter</div>
+              <div class="empty-sub">Paste your resume + JD above, then click Optimize</div>
+            </div>
+            <div id="coverResult" style="display:none">
+              <div class="streaming-badge" id="coverStreaming">
+                <span class="streaming-dot"></span> Writing cover letter...
+              </div>
+              <div class="output-content-box" id="coverOutput"></div>
+              <div class="output-actions">
+                <button class="ms-btn-secondary" onclick="copyOut('coverOutput')">📋 Copy</button>
+                <button class="ms-btn-secondary dl" onclick="downloadFile('cover','docx')">⬇ Download DOCX</button>
+                <button class="ms-btn-secondary dl" onclick="downloadFile('cover','pdf')">⬇ Download PDF</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Analysis output -->
+          <div class="output-body" id="out-analysis">
+            <div class="empty-state" id="analysisEmpty">
+              <div class="empty-icon">📊</div>
+              <div class="empty-title">ATS match analysis</div>
+              <div class="empty-sub">Shows score, gaps, missing keywords, and path to 93+</div>
+            </div>
+            <div id="analysisResult" style="display:none">
+              <div class="ats-card" id="atsCard" style="display:none">
+                <div class="ats-ring" id="atsRing">
+                  <span class="ats-score-num" id="atsNum">–</span>
+                  <span class="ats-score-denom">/100</span>
+                </div>
+                <div>
+                  <div class="ats-meta-title">ATS Score</div>
+                  <div class="ats-meta-sub" id="atsVerdict">Calculating...</div>
+                  <div class="ats-meta-target">🎯 Target: 93+</div>
+                </div>
+              </div>
+              <div class="streaming-badge" id="analysisStreaming">
+                <span class="streaming-dot"></span> Analyzing match...
+              </div>
+              <div class="output-content-box" id="analysisOutput"></div>
+              <div class="output-actions">
+                <button class="ms-btn-secondary" onclick="copyOut('analysisOutput')">📋 Copy</button>
+                <button class="ms-btn-secondary dl" onclick="downloadAnalysisPdf()">⬇ Download Report PDF</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interview Prep output -->
+          <div class="output-body" id="out-interview">
+            <div class="empty-state" id="interviewEmpty">
+              <div class="empty-icon">🎤</div>
+              <div class="empty-title">Interview prep package</div>
+              <div class="empty-sub">Paste resume + JD above, then click Optimize</div>
+            </div>
+            <div id="interviewResult" style="display:none">
+              <div class="streaming-badge" id="interviewStreaming">
+                <span class="streaming-dot"></span> Generating interview questions...
+              </div>
+              <div class="output-content-box" id="interviewOutput"></div>
+              <div class="output-actions">
+                <button class="ms-btn-secondary" onclick="copyOut('interviewOutput')">📋 Copy all questions</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Milestone Tracker -->
+          <div class="output-body" id="out-milestones">
+            <div class="milestone-header">
+              <div class="milestone-title-row">
+                <span style="font-size:20px">🏆</span>
+                <div>
+                  <div class="milestone-heading">My Career Roadmap</div>
+                  <div class="milestone-sub">Track your progress toward your dream job</div>
+                </div>
+                <button class="ms-btn-secondary" onclick="addMilestone()" style="margin-left:auto">+ Add milestone</button>
+              </div>
+              <div class="milestone-progress-bar">
+                <div class="milestone-progress-fill" id="progressFill"></div>
+              </div>
+              <div class="milestone-progress-label" id="progressLabel">0 of 0 completed</div>
+            </div>
+            <div id="milestoneList" class="milestone-list">
+              <div class="empty-state" id="milestonesEmpty">
+                <div class="empty-icon">🗺️</div>
+                <div class="empty-title">No milestones yet</div>
+                <div class="empty-sub">Ask the Career Coach for your roadmap, then add milestones here to track your progress</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+marked.setOptions({breaks:true, gfm:true});
+
+// ── Panel switching ──────────────────────────────────────────────────────────
+function switchPanel(name, btn) {
+  document.querySelectorAll('.pivot-tab').forEach(b => {
+    b.classList.remove('active');
+    b.setAttribute('aria-selected','false');
+  });
+  btn.classList.add('active');
+  btn.setAttribute('aria-selected','true');
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  document.getElementById('nav-chat').style.display   = name==='chat'   ? 'flex' : 'none';
+  document.getElementById('nav-studio').style.display = name==='studio' ? 'flex' : 'none';
+}
+
+function switchOutputTab(name, btn) {
+  document.querySelectorAll('.output-pivot-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.output-body').forEach(b => b.classList.remove('active'));
+  document.getElementById('out-'+name).classList.add('active');
+}
+
+// ── Chat ─────────────────────────────────────────────────────────────────────
+let chatHistory = [];
+let isSending = false;
+const msgsEl   = document.getElementById('chatMessages');
+const inputEl  = document.getElementById('chatInput');
+const sendBtnEl= document.getElementById('sendBtn');
+
+inputEl.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (!isSending) sendMessage(); }
+});
+inputEl.addEventListener('input', () => {
+  inputEl.style.height = 'auto';
+  inputEl.style.height = Math.min(inputEl.scrollHeight, 140) + 'px';
+});
+
+function hideWelcome() {
+  const w = document.getElementById('welcomeState');
+  if (w) w.remove();
+}
+
+function esc(t) {
+  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function scrollBottom() { msgsEl.scrollTop = msgsEl.scrollHeight; }
+
+function appendMessage(role, content) {
+  hideWelcome();
+  const g = document.createElement('div');
+  g.className = 'msg-group ' + role;
+
+  const initials = role === 'user' ? 'DS' : '🧭';
+  const sender   = role === 'user' ? 'You' : 'CareerIQ';
+  const avatarClass = role === 'user' ? 'user' : 'ai';
+
+  g.innerHTML = `
+    <div class="msg-header">
+      <div class="msg-avatar ${avatarClass}">${initials}</div>
+      <span class="msg-sender">${sender}</span>
+    </div>
+    <div class="msg-bubble">${role==='assistant' ? marked.parse(content) : esc(content)}</div>
+  `;
+  msgsEl.appendChild(g);
+  scrollBottom();
+  return g;
+}
+
+function appendTyping() {
+  hideWelcome();
+  const g = document.createElement('div');
+  g.className = 'msg-group assistant';
+  g.id = 'typingGroup';
+  g.innerHTML = `
+    <div class="msg-header">
+      <div class="msg-avatar ai">🧭</div>
+      <span class="msg-sender">CareerIQ</span>
+    </div>
+    <div class="typing-indicator">
+      <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+    </div>
+  `;
+  msgsEl.appendChild(g);
+  scrollBottom();
+  return g;
+}
+
+async function sendMessage() {
+  const text = inputEl.value.trim();
+  if (!text || isSending) return;
+  isSending = true;
+  sendBtnEl.disabled = true;
+  inputEl.value = '';
+  inputEl.style.height = 'auto';
+
+  appendMessage('user', text);
+  chatHistory.push({ role:'user', content:text });
+  const typingEl = appendTyping();
+
+  try {
+    const res = await fetch('/chat/traced', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ messages: chatHistory })
+    });
+
+    typingEl.remove();
+
+    // Build message group with reasoning trace + bubble
+    const uid      = 'msg-' + Date.now();
+    const traceId  = 'trace-' + Date.now();
+    const g = document.createElement('div');
+    g.className = 'msg-group assistant';
+    g.innerHTML = `
+      <div class="msg-header">
+        <div class="msg-avatar ai">🧭</div>
+        <span class="msg-sender">CareerIQ</span>
+      </div>
+      <div class="reasoning-trace" id="${traceId}"></div>
+      <div class="msg-bubble" id="${uid}" style="display:none"></div>
+    `;
+    msgsEl.appendChild(g);
+
+    const traceEl  = document.getElementById(traceId);
+    const bubbleEl = document.getElementById(uid);
+    const reader   = res.body.getReader();
+    const dec      = new TextDecoder();
+    let full = '';
+    let steps = [];
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      const lines = dec.decode(value).split('\n');
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const data = line.slice(6);
+        if (data === '[DONE]') break;
+        try {
+          const p = JSON.parse(data);
+          if (p.type === 'step') {
+            steps.push(p.label);
+            traceEl.innerHTML = steps.map((s, i) =>
+              `<div class="trace-step ${i === steps.length-1 ? 'active' : 'done'}">
+                <span class="trace-dot"></span>
+                <span class="trace-label">${s}</span>
+              </div>`
+            ).join('');
+            scrollBottom();
+          } else if (p.type === 'content' || p.content) {
+            const content = p.content || p.content;
+            if (content) {
+              // Mark last step done, show bubble
+              if (traceEl.querySelector('.trace-step.active')) {
+                traceEl.querySelectorAll('.trace-step').forEach(s => s.classList.remove('active'));
+                traceEl.querySelectorAll('.trace-step').forEach(s => s.classList.add('done'));
+              }
+              bubbleEl.style.display = 'block';
+              full += content;
+              bubbleEl.innerHTML = marked.parse(full);
+              scrollBottom();
+            }
+          }
+        } catch(e) {}
+      }
+    }
+
+    // Collapse trace after response complete
+    setTimeout(() => {
+      if (traceEl) traceEl.classList.add('collapsed');
+    }, 1500);
+
+    chatHistory.push({ role:'assistant', content:full });
+
+  } catch(e) {
+    typingEl.remove();
+    appendMessage('assistant', 'Connection error. Please check your Foundry endpoint and try again.');
+  }
+
+  isSending = false;
+  sendBtnEl.disabled = false;
+  inputEl.focus();
+}
+
+function sendStarter(t) {
+  if (!t) return;
+  inputEl.value = t;
+  sendMessage();
+}
+
+function clearChat() {
+  chatHistory = [];
+  msgsEl.innerHTML = `
+    <div class="welcome-state" id="welcomeState">
+      <div class="welcome-hero">🧭</div>
+      <h1 class="welcome-heading">Welcome to CareerIQ</h1>
+      <p class="welcome-sub">Your personal AI career mentor, built on Microsoft Foundry. Tell me where you are today and your dream job.</p>
+      <div class="welcome-chips">
+        <span class="welcome-chip">✅ Step-by-step roadmap</span>
+        <span class="welcome-chip">📜 Cert links</span>
+        <span class="welcome-chip">🗺️ Career roadmaps</span>
+        <span class="welcome-chip">🆓 Free resources</span>
+      </div>
+    </div>`;
+}
+
+// ── Studio ───────────────────────────────────────────────────────────────────
+function countChars(id, countId) {
+  const n = document.getElementById(id).value.length;
+  document.getElementById(countId).textContent = n.toLocaleString() + ' chars';
+}
+
+const generatedOutputs = { resume:'', cover:'', analysis:'', interview:'' };
+
+async function streamToElement(endpoint, payload, outputId, streamId, emptyId, resultId, cacheKey) {
+  document.getElementById(emptyId).style.display  = 'none';
+  document.getElementById(resultId).style.display = 'block';
+  document.getElementById(streamId).style.display = 'flex';
+  const el = document.getElementById(outputId);
+  el.innerHTML = '';
+  let full = '';
+  try {
+    const res = await fetch(endpoint, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+    const reader = res.body.getReader();
+    const dec    = new TextDecoder();
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      const lines = dec.decode(value).split('\n');
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const data = line.slice(6);
+        if (data === '[DONE]') break;
+        try {
+          const p = JSON.parse(data);
+          if (p.content) { full += p.content; el.innerHTML = marked.parse(full); }
+        } catch(e) {}
+      }
+    }
+    if (cacheKey) generatedOutputs[cacheKey] = full;
+  } catch(e) {
+    el.innerHTML = `<span style="color:#f87171">Error: ${e.message}</span>`;
+  }
+  document.getElementById(streamId).style.display = 'none';
+}
+
+async function runStudio() {
+  const resume = document.getElementById('resumeInput').value.trim();
+  const jd     = document.getElementById('jdInput').value.trim();
+  if (!resume) { alert('Please paste your resume first.'); return; }
+  if (!jd)     { alert('Please paste the job description first.'); return; }
+
+  Object.keys(generatedOutputs).forEach(k => generatedOutputs[k] = '');
+
+  const level    = document.getElementById('roleLevel').value;
+  const industry = document.getElementById('industry').value;
+  const btn      = document.getElementById('optimizeBtn');
+  btn.disabled   = true;
+  btn.textContent = '⏳ Optimizing...';
+
+  document.getElementById('resumeScores').innerHTML = `
+    <span class="score-badge ats">✅ ATS Optimizing...</span>
+    <span class="score-badge match">🎯 Matching keywords...</span>
+    <span class="score-badge kw">🔑 Injecting skills...</span>
+  `;
+
+  const payload = { resume, jd, level, industry };
+
+  // Run all 4 in parallel
+  await Promise.all([
+    streamToElement('/studio/resume',    payload, 'resumeOutput',    'resumeStreaming',    'resumeEmpty',    'resumeResult',    'resume'),
+    streamToElement('/studio/cover',     payload, 'coverOutput',     'coverStreaming',     'coverEmpty',     'coverResult',     'cover'),
+    streamToElement('/studio/analysis',  payload, 'analysisOutput',  'analysisStreaming',  'analysisEmpty',  'analysisResult',  'analysis'),
+    streamToElement('/studio/interview', payload, 'interviewOutput', 'interviewStreaming', 'interviewEmpty', 'interviewResult', 'interview'),
+  ]);
+
+  document.getElementById('resumeScores').innerHTML = `
+    <span class="score-badge ats">✅ ATS 93+ Optimized</span>
+    <span class="score-badge match">🎯 Keywords Injected</span>
+    <span class="score-badge kw">🔑 Ready to download</span>
+  `;
+
+  extractAtsScore(generatedOutputs.analysis);
+
+  btn.disabled   = false;
+  btn.textContent = '✨ Optimize Resume + Cover Letter + Interview Prep';
+}
+
+// ── Milestone Tracker ────────────────────────────────────────────────────────
+let milestones = JSON.parse(localStorage.getItem('careeriq_milestones') || '[]');
+
+function saveMilestones() {
+  localStorage.setItem('careeriq_milestones', JSON.stringify(milestones));
+  renderMilestones();
+}
+
+function renderMilestones() {
+  const list    = document.getElementById('milestoneList');
+  const empty   = document.getElementById('milestonesEmpty');
+  const fill    = document.getElementById('progressFill');
+  const label   = document.getElementById('progressLabel');
+
+  if (milestones.length === 0) {
+    empty.style.display = 'flex';
+    list.innerHTML = '';
+    list.appendChild(empty);
+    fill.style.width = '0%';
+    label.textContent = '0 of 0 completed';
+    return;
+  }
+
+  empty.style.display = 'none';
+  const done = milestones.filter(m => m.done).length;
+  const pct  = Math.round((done / milestones.length) * 100);
+  fill.style.width  = pct + '%';
+  fill.style.background = pct === 100 ? 'var(--ms-green-light)' : 'var(--ms-blue)';
+  label.textContent = `${done} of ${milestones.length} completed — ${pct}% to your dream job`;
+
+  list.innerHTML = milestones.map((m, i) => `
+    <div class="milestone-item ${m.done ? 'completed' : ''}" id="mi-${i}">
+      <div class="milestone-check" onclick="toggleMilestone(${i})">${m.done ? '✓' : ''}</div>
+      <div class="milestone-text">${m.text}</div>
+      <button class="milestone-delete" onclick="deleteMilestone(${i})">✕</button>
+    </div>
+  `).join('');
+}
+
+function toggleMilestone(i) {
+  milestones[i].done = !milestones[i].done;
+  saveMilestones();
+}
+
+function deleteMilestone(i) {
+  milestones.splice(i, 1);
+  saveMilestones();
+}
+
+function addMilestone() {
+  const text = prompt('Add a milestone to your roadmap:');
+  if (!text || !text.trim()) return;
+  milestones.push({ text: text.trim(), done: false });
+  saveMilestones();
+  switchOutputTab('milestones', document.querySelector('[onclick*="milestones"]'));
+}
+
+// Initialize milestones on load
+document.addEventListener('DOMContentLoaded', renderMilestones);
+
+function extractAtsScore(text) {
+  const m = text.match(/\b([4-9]\d|100)\s*\/\s*100\b/);
+  if (!m) return;
+  const score = parseInt(m[1]);
+  const card   = document.getElementById('atsCard');
+  const ring   = document.getElementById('atsRing');
+  const num    = document.getElementById('atsNum');
+  const verdict= document.getElementById('atsVerdict');
+  card.style.display = 'flex';
+  num.textContent = score;
+  if (score >= 90)      { ring.className='ats-ring good'; verdict.textContent='🎉 Excellent — ready to apply!'; }
+  else if (score >= 75) { ring.className='ats-ring warn'; verdict.textContent='⚠️ Good — apply the fixes below'; }
+  else                  { ring.className='ats-ring';      verdict.textContent='❌ Needs work — follow the plan below'; }
+}
+
+function getPayload(extra={}) {
+  return {
+    resume:   document.getElementById('resumeInput').value,
+    jd:       document.getElementById('jdInput').value,
+    level:    document.getElementById('roleLevel').value,
+    industry: document.getElementById('industry').value,
+    ...extra
+  };
+}
+
+async function downloadFile(type, format) {
+  const cached = type === 'resume' ? generatedOutputs.resume : generatedOutputs.cover;
+  if (!cached) { alert('Click "Optimize Resume + Cover Letter" first, then download.'); return; }
+
+  const btns = document.querySelectorAll('.ms-btn-secondary.dl');
+  btns.forEach(b => { b.disabled = true; });
+
+  const textKey = type === 'resume' ? 'optimized_text' : 'cover_text';
+  try {
+    const res = await fetch(`/download/${type}/${format}`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(getPayload({ [textKey]: cached }))
+    });
+    if (!res.ok) { alert('Download error'); return; }
+    const blob = await res.blob();
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url;
+    a.download = type==='resume' ? `CareerIQ_Optimized_Resume.${format}` : `CareerIQ_Cover_Letter.${format}`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch(e) { alert('Download failed: ' + e.message); }
+  finally    { btns.forEach(b => { b.disabled = false; }); }
+}
+
+async function downloadAnalysisPdf() {
+  const text = generatedOutputs.analysis || document.getElementById('analysisOutput').innerText || '';
+  if (!text) { alert('Click "Optimize" first to generate the analysis.'); return; }
+  const btns = document.querySelectorAll('.ms-btn-secondary.dl');
+  btns.forEach(b => { b.disabled = true; });
+  try {
+    const res = await fetch('/download/analysis/pdf', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(getPayload({ analysis_text: text }))
+    });
+    if (!res.ok) { alert('Download error'); return; }
+    const blob = await res.blob();
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = 'CareerIQ_Match_Analysis.pdf';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch(e) { alert('Download failed: ' + e.message); }
+  finally    { btns.forEach(b => { b.disabled = false; }); }
+}
+
+function copyOut(id) {
+  const text = document.getElementById(id).innerText || '';
+  navigator.clipboard.writeText(text).then(() => {
+    const btns = document.querySelectorAll('.ms-btn-secondary');
+    // find the button that was clicked
+    const btn = event.target.closest('.ms-btn-secondary');
+    if (btn) {
+      const orig = btn.textContent;
+      btn.textContent = '✅ Copied!';
+      setTimeout(() => btn.textContent = orig, 2000);
+    }
+  });
+}
+
+// ── File upload ──────────────────────────────────────────────────────────────
+async function handleUpload(input, targetId, charCountId, statusId) {
+  const file = input.files[0];
+  if (!file) return;
+  const status = document.getElementById(statusId);
+  status.className = 'upload-status loading';
+  status.innerHTML = '<span class="upload-spin"></span> Reading...';
+  const fd = new FormData();
+  fd.append('file', file);
+  try {
+    const res  = await fetch('/upload', { method:'POST', body:fd });
+    const data = await res.json();
+    if (data.error) {
+      status.className = 'upload-status error';
+      status.innerHTML = '✗ ' + data.error;
+      setTimeout(()=>{ status.className='upload-status'; status.innerHTML=''; }, 4000);
+      return;
+    }
+    document.getElementById(targetId).value = data.text;
+    countChars(targetId, charCountId);
+    const fname = data.filename.length > 20 ? data.filename.slice(0,18)+'…' : data.filename;
+    status.className = 'upload-status success';
+    status.innerHTML = '✓ ' + fname;
+    setTimeout(()=>{ status.className='upload-status'; status.innerHTML=''; }, 3000);
+  } catch(e) {
+    status.className = 'upload-status error';
+    status.innerHTML = '✗ Upload failed';
+    setTimeout(()=>{ status.className='upload-status'; status.innerHTML=''; }, 4000);
+  }
+  input.value = '';
+}
+</script>
+</body>
+</html>
