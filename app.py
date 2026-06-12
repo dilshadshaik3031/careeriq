@@ -40,18 +40,42 @@ def extract_text_from_file(file):
 
 # ── Azure helpers ──────────────────────────────────────────────────────────────
 def get_openai_client():
-    client = AIProjectClient(
-        endpoint=os.getenv("FOUNDRY_PROJECT_ENDPOINT"),
-        credential=DefaultAzureCredential(),
-    )
-    return client.get_openai_client()
+    """
+    Use API key if available (Render/cloud deployment),
+    fall back to DefaultAzureCredential for local development.
+    """
+    endpoint = os.getenv("FOUNDRY_PROJECT_ENDPOINT")
+    api_key  = os.getenv("AZURE_API_KEY")
+
+    if api_key:
+        # Cloud deployment — use API key directly
+        from openai import AzureOpenAI
+        # Extract base URL from endpoint
+        # e.g. https://careeriq-resource.services.ai.azure.com/api/projects/careeriq
+        # → https://careeriq-resource.services.ai.azure.com
+        base = endpoint.split('/api/projects/')[0] if '/api/projects/' in endpoint else endpoint
+        return AzureOpenAI(
+            api_key=api_key,
+            azure_endpoint=base,
+            api_version="2025-01-01-preview",
+        )
+    else:
+        # Local development — use DefaultAzureCredential
+        from azure.identity import DefaultAzureCredential
+        from azure.ai.projects import AIProjectClient
+        client = AIProjectClient(
+            endpoint=endpoint,
+            credential=DefaultAzureCredential(),
+        )
+        return client.get_openai_client()
 
 def stream_response(messages, max_tokens=1800):
     def generate():
         try:
             oc = get_openai_client()
+            model = os.getenv("AZURE_AI_MODEL_DEPLOYMENT_NAME","gpt-4.1-mini")
             stream = oc.chat.completions.create(
-                model=os.getenv("AZURE_AI_MODEL_DEPLOYMENT_NAME","gpt-4.1-mini"),
+                model=model,
                 messages=messages, stream=True,
                 max_tokens=max_tokens, temperature=0.7,
             )
@@ -66,8 +90,9 @@ def stream_response(messages, max_tokens=1800):
 
 def call_ai(messages, max_tokens=2000):
     oc = get_openai_client()
+    model = os.getenv("AZURE_AI_MODEL_DEPLOYMENT_NAME","gpt-4.1-mini")
     resp = oc.chat.completions.create(
-        model=os.getenv("AZURE_AI_MODEL_DEPLOYMENT_NAME","gpt-4.1-mini"),
+        model=model,
         messages=messages, max_tokens=max_tokens, temperature=0.4,
     )
     return resp.choices[0].message.content
